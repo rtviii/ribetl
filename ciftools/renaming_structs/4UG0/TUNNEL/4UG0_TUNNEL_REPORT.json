@@ -1,0 +1,811 @@
+{
+  "pdbid": "4UG0",
+  "probeRadius": 10,
+  "rna": {
+    "L5": [
+      {
+        "strand": "L5",
+        "resid": 4452,
+        "resname": "U",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4447,
+        "resname": "C",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 3901,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 3907,
+        "resname": "G",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4398,
+        "resname": "C",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4397,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4522,
+        "resname": "G",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 3909,
+        "resname": "C",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4396,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 3902,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4450,
+        "resname": "U",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4393,
+        "resname": "G",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4449,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4446,
+        "resname": "U",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4451,
+        "resname": "G",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 3904,
+        "resname": "G",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 3905,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 3908,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 3903,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4557,
+        "resname": "U",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 5165,
+        "resname": "MG",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": true
+      },
+      {
+        "strand": "L5",
+        "resid": 4556,
+        "resname": "U",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4531,
+        "resname": "U",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4532,
+        "resname": "U",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4530,
+        "resname": "U",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4385,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 3910,
+        "resname": "C",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4387,
+        "resname": "C",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4533,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4554,
+        "resname": "G",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4386,
+        "resname": "C",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4384,
+        "resname": "U",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4547,
+        "resname": "C",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4548,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 3911,
+        "resname": "C",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4546,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4545,
+        "resname": "G",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4383,
+        "resname": "U",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4197,
+        "resname": "G",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4196,
+        "resname": "G",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4198,
+        "resname": "G",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4199,
+        "resname": "C",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4555,
+        "resname": "U",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 3644,
+        "resname": "U",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 1595,
+        "resname": "G",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 1591,
+        "resname": "U",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 4527,
+        "resname": "G",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 1601,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 3643,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 1600,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 1596,
+        "resname": "U",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 1638,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 3862,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 3863,
+        "resname": "C",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 5197,
+        "resname": "MG",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": true
+      },
+      {
+        "strand": "L5",
+        "resid": 3861,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 2794,
+        "resname": "C",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 2353,
+        "resname": "U",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 2354,
+        "resname": "G",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 2355,
+        "resname": "G",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 367,
+        "resname": "C",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 368,
+        "resname": "C",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 366,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 376,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 369,
+        "resname": "G",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 374,
+        "resname": "G",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 2795,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 377,
+        "resname": "A",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      },
+      {
+        "strand": "L5",
+        "resid": 375,
+        "resname": "G",
+        "polytype": "RNA",
+        "nom": null,
+        "isligand": false
+      }
+    ]
+  },
+  "proteins": {
+    "LP": [
+      {
+        "strand": "LP",
+        "resid": 133,
+        "resname": "HIS",
+        "polytype": "Protein",
+        "nom": ["uL22"],
+        "isligand": false
+      },
+      {
+        "strand": "LP",
+        "resid": 135,
+        "resname": "ARG",
+        "polytype": "Protein",
+        "nom": ["uL22"],
+        "isligand": false
+      },
+      {
+        "strand": "LP",
+        "resid": 132,
+        "resname": "ALA",
+        "polytype": "Protein",
+        "nom": ["uL22"],
+        "isligand": false
+      },
+      {
+        "strand": "LP",
+        "resid": 134,
+        "resname": "GLY",
+        "polytype": "Protein",
+        "nom": ["uL22"],
+        "isligand": false
+      },
+      {
+        "strand": "LP",
+        "resid": 136,
+        "resname": "ILE",
+        "polytype": "Protein",
+        "nom": ["uL22"],
+        "isligand": false
+      },
+      {
+        "strand": "LP",
+        "resid": 137,
+        "resname": "ASN",
+        "polytype": "Protein",
+        "nom": ["uL22"],
+        "isligand": false
+      },
+      {
+        "strand": "LP",
+        "resid": 138,
+        "resname": "PRO",
+        "polytype": "Protein",
+        "nom": ["uL22"],
+        "isligand": false
+      },
+      {
+        "strand": "LP",
+        "resid": 126,
+        "resname": "ARG",
+        "polytype": "Protein",
+        "nom": ["uL22"],
+        "isligand": false
+      },
+      {
+        "strand": "LP",
+        "resid": 128,
+        "resname": "ARG",
+        "polytype": "Protein",
+        "nom": ["uL22"],
+        "isligand": false
+      },
+      {
+        "strand": "LP",
+        "resid": 130,
+        "resname": "TYR",
+        "polytype": "Protein",
+        "nom": ["uL22"],
+        "isligand": false
+      }
+    ],
+    "LC": [
+      {
+        "strand": "LC",
+        "resid": 70,
+        "resname": "GLY",
+        "polytype": "Protein",
+        "nom": ["uL4"],
+        "isligand": false
+      },
+      {
+        "strand": "LC",
+        "resid": 71,
+        "resname": "ARG",
+        "polytype": "Protein",
+        "nom": ["uL4"],
+        "isligand": false
+      },
+      {
+        "strand": "LC",
+        "resid": 69,
+        "resname": "THR",
+        "polytype": "Protein",
+        "nom": ["uL4"],
+        "isligand": false
+      },
+      {
+        "strand": "LC",
+        "resid": 72,
+        "resname": "ALA",
+        "polytype": "Protein",
+        "nom": ["uL4"],
+        "isligand": false
+      },
+      {
+        "strand": "LC",
+        "resid": 73,
+        "resname": "VAL",
+        "polytype": "Protein",
+        "nom": ["uL4"],
+        "isligand": false
+      },
+      {
+        "strand": "LC",
+        "resid": 67,
+        "resname": "TRP",
+        "polytype": "Protein",
+        "nom": ["uL4"],
+        "isligand": false
+      },
+      {
+        "strand": "LC",
+        "resid": 88,
+        "resname": "GLY",
+        "polytype": "Protein",
+        "nom": ["uL4"],
+        "isligand": false
+      },
+      {
+        "strand": "LC",
+        "resid": 78,
+        "resname": "ARG",
+        "polytype": "Protein",
+        "nom": ["uL4"],
+        "isligand": false
+      },
+      {
+        "strand": "LC",
+        "resid": 87,
+        "resname": "SER",
+        "polytype": "Protein",
+        "nom": ["uL4"],
+        "isligand": false
+      },
+      {
+        "strand": "LC",
+        "resid": 89,
+        "resname": "GLN",
+        "polytype": "Protein",
+        "nom": ["uL4"],
+        "isligand": false
+      },
+      {
+        "strand": "LC",
+        "resid": 85,
+        "resname": "HIS",
+        "polytype": "Protein",
+        "nom": ["uL4"],
+        "isligand": false
+      },
+      {
+        "strand": "LC",
+        "resid": 84,
+        "resname": "THR",
+        "polytype": "Protein",
+        "nom": ["uL4"],
+        "isligand": false
+      },
+      {
+        "strand": "LC",
+        "resid": 86,
+        "resname": "ARG",
+        "polytype": "Protein",
+        "nom": ["uL4"],
+        "isligand": false
+      },
+      {
+        "strand": "LC",
+        "resid": 83,
+        "resname": "GLY",
+        "polytype": "Protein",
+        "nom": ["uL4"],
+        "isligand": false
+      },
+      {
+        "strand": "LC",
+        "resid": 82,
+        "resname": "GLY",
+        "polytype": "Protein",
+        "nom": ["uL4"],
+        "isligand": false
+      }
+    ],
+    "Ll": [
+      {
+        "strand": "Ll",
+        "resid": 46,
+        "resname": "ARG",
+        "polytype": "Protein",
+        "nom": ["eL39"],
+        "isligand": false
+      },
+      {
+        "strand": "Ll",
+        "resid": 47,
+        "resname": "THR",
+        "polytype": "Protein",
+        "nom": ["eL39"],
+        "isligand": false
+      },
+      {
+        "strand": "Ll",
+        "resid": 39,
+        "resname": "SER",
+        "polytype": "Protein",
+        "nom": ["eL39"],
+        "isligand": false
+      }
+    ]
+  },
+  "ligands": [
+    {
+      "strand": "L5",
+      "resid": 5165,
+      "resname": "MG",
+      "polytype": "Other",
+      "nom": null,
+      "isligand": true
+    },
+    {
+      "strand": "L5",
+      "resid": 5197,
+      "resname": "MG",
+      "polytype": "Other",
+      "nom": null,
+      "isligand": true
+    }
+  ],
+  "nomMap": { "LP": ["uL22"], "LC": ["uL4"], "Ll": ["eL39"] }
+}

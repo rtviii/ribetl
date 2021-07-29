@@ -1,0 +1,11 @@
+
+structs{*}.txt
+node_modules/
+venv/
+mole
+static/
+polyvenv/
+venv/
+**/*.cif
+**/*.zip
+**/*.part

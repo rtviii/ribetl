@@ -1,0 +1,40 @@
+{
+  "name": "ribetl",
+  "version": "0.0.1",
+  "description": "CLI for a transforming and uploading the semantic and structural data to ribosome.xyz.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rtviii/ribetl.git"
+  },
+  "keywords": [
+    "ribosome",
+    "data",
+    "api"
+  ],
+  "author": "rtviii",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rtviii/ribetl/issues"
+  },
+  "homepage": "https://github.com/rtviii/ribetl#readme",
+  "dependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/commander": "^2.12.2",
+    "@types/lodash": "^4.14.170",
+    "@types/node": "^15.12.5",
+    "@types/shelljs": "^0.8.8",
+    "axios": "^0.21.1",
+    "commander": "^8.0.0",
+    "dotenv": "^10.0.0",
+    "lodash": "^4.17.21",
+    "shelljs": "^0.8.4",
+    "yargs": "^17.0.1"
+  },
+  "devDependencies": {
+    "@types/yargs": "^17.0.0"
+  }
+}
