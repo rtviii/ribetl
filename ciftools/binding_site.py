@@ -1,4 +1,5 @@
 from ast import expr_context
+import builtins
 from pydoc import resolve
 from neoget import _neoget
 import dataclasses
@@ -24,6 +25,13 @@ import itertools
 import numpy as np
 flatten = itertools.chain.from_iterable
 n1      = np.array
+
+
+#! I want to be able to write the nested dataclass to json and csv and reconstruct it from the serialized files seamlessly.
+#! Add asymids
+#! pymol-scriptable
+
+
 
 load_dotenv(dotenv_path='/home/rxz/dev/ribetl/.env'      )
 STATIC_ROOT = os  .getenv   ('STATIC_ROOT')
@@ -65,6 +73,18 @@ NUCLEOTIDES = ['A','T','C','G','U']
 # 5afi, 4v8q, 4v5s,4v5g, 
 
 
+
+
+def vprint(*args, **kwargs):
+    if VERBOSE:print(*args,**kwargs) 
+    else:...
+def vpprint(*args, **kwargs):
+    if VERBOSE:pprint(*args,**kwargs) 
+    else:...
+
+
+
+
 @dataclass(unsafe_hash=True, order=True)
 class ResidueLite     : 
 
@@ -84,6 +104,7 @@ class ResidueLite     :
 class BindingSiteChain: 
       sequence        : str
       nomenclature    : List[str]
+      asym_ids        : List[str]
       residues        : List[ResidueLite]
 
 class BindingSite:
@@ -97,11 +118,11 @@ class BindingSite:
 
     def to_json(self,pathtofile:str)->None:
         with open(pathtofile, 'w') as outf: 
-            serialized= {}
+            serialized = {}
             for x in self.data.items():
                 serialized.update({x[0]: dataclasses.asdict(x[1])})  
             json.dump(serialized,outf)
-            print("Saved successfuly.")
+            print(f"\033[91mSaved  {pathtofile} successfuly.\033[0m")
 
     def to_csv(self,pathtofile:str)->None:
 
@@ -173,6 +194,8 @@ def get_ligand_nbrs(
     )-> BindingSite  : 
     """KDTree search the neighbors of a given list of residues(which constitue a ligand) 
     and return unique having tagged them with a ban identifier proteins within 5 angstrom of these residues. """
+    
+    vprint(f"Parsing ligand {lig_chemid}...")
 
     pdbid = struct.get_id()
     ns           = NeighborSearch(list(struct.get_atoms()))
@@ -186,7 +209,9 @@ def get_ligand_nbrs(
                 nbr_residues.extend(ns.search(atom.get_coord(), 10,level='R'))
 
     #? Filtering phase
+    #Convert residues to the dataclass, filter non-unique
     nbr_residues = list(set([* map(ResidueLite.res2reslite, nbr_residues) ]))
+    #Filter the ligand itself, water and other special residues 
     nbr_residues = list(filter(lambda resl:resl.residue_name  in [*AMINO_ACIDS.keys(),  *NUCLEOTIDES], nbr_residues))
 
     # x: ResidueLite
@@ -197,63 +222,60 @@ def get_ligand_nbrs(
 
     for c in chain_names:
         seq = _neoget(f"""match (n:RibosomeStructure{{rcsb_id:"{struct.get_id().upper()}"}})-[]-(r {{entity_poly_strand_id:"{c}"}}) 
-        return r.entity_poly_seq_one_letter_code""")
-        seq = [*flatten(seq)]
+        return r.entity_poly_seq_one_letter_code, r.asym_ids""")
+        seq,asymid = [*flatten(seq)]
         nbr_dict[c]= BindingSiteChain(
-             seq[0] if len(seq) >0 else '',
-             list  ( flatten    (run       (matchStrandToClass(pdbid, c))) ),
-            [* map   ( dataclasses.asdict,sorted( list       (filter    (lambda _ : _.parent_strand_id == c, nbr_residues)),key= operator   .attrgetter('residue_id')) )]
+            seq      ,
+            list      ( flatten (run (matchStrandToClass(pdbid, c))) ), #* <------- nomenclature
+            asymid   ,
+            sorted([residue for residue in nbr_residues if residue.parent_strand_id == c], key=operator.attrgetter('residue_id'))
         )
 
+    vpprint(nbr_dict)
     return BindingSite(nbr_dict)
 
 def dropions(s:str): return False if "ion" in s[1].lower()else  True
 
-def ParseLigand(ligid:str, rcsbid:str, force:bool=False):
-    # try:
+def parse_and_save_ligand(ligid:str, rcsbid:str):
     outfile_json = os.path.join(STATIC_ROOT,rcsbid.upper(), f'LIGAND_{ligid}.json')
     # outfile_csv  = os.path.join(STATIC_ROOT,rcsbid.upper(), f'LIGAND_{ligid}.csv')
 
-    if os.path.exists(outfile_json) and not force:
-        print(outfile_json, "exists. Skipping.")
-        exit(1)
+    struct                   = openStructutre  (rcsbid                   )
+    residues : List[Residue] = getLigandResIds (ligid  , struct          )
+    bs:BindingSite           = get_ligand_nbrs (ligid ,residues , struct )
 
-    struct                     = openStructutre           (rcsbid                                            )
-    residues   : List[Residue] = getLigandResIds          (ligid       , struct                              )
-    bs:BindingSite = get_ligand_nbrs          (ligid,residues   , struct                               )
-    pprint(bs.data)
     bs.to_json(outfile_json)
     # bs.to_csv(outfile_csv)
 
-    # except Exception as e:
-    #     print("Error:", e)
 
 if __name__ =="__main__" :
 
     parser      = argparse.ArgumentParser(                                             )
-    parser .add_argument ('-l','--ligand'   , type  = str                )
-    parser .add_argument ('-s','--structure', type  = str ,required =True)
-    parser .add_argument ('-V','--verbose'  , action='store_true'        )
-    parser .add_argument ('-f','--force'  , action='store_true'        )
+    parser .add_argument ('-l','--ligand'    , type  = str                )
+    parser .add_argument ('-s','--structure' , type  = str ,required =True)
+    parser .add_argument ('-V','--verbose'   , action='store_true'        )
+    parser .add_argument ('-f','--force'     , action='store_true'        )
     args = parser.parse_args()
 
     VERBOSE     = args.verbose
     PDBID       = args.structure.upper()
     LIGID       = args.ligand
-    FORCE       = args.force
 
     if LIGID == None:
-        ligids = n1([ *filter(dropions, get_lig_ids_struct(PDBID) ) ],dtype=object)
-        for l in ligids:
-            ParseLigand(l[0].upper(), PDBID,force=True)
+        struct_ligands = n1([ *filter(dropions, get_lig_ids_struct(PDBID) ) ],dtype=object)
+        print(f"\tParsing ligands for structure {PDBID}: ")
+        print("Found:",end="")
+        pprint(struct_ligands)
+        if len( struct_ligands )<1: print("None found. Exited."); exit(1)
+        for l in struct_ligands:
+            parse_and_save_ligand(l[0].upper(), PDBID)
     else:
-        print("Parsing ligand ", LIGID.upper(), PDBID)
-        ParseLigand(LIGID.upper(),PDBID, force=FORCE)
+        parse_and_save_ligand(LIGID.upper(),PDBID)
 
 
 #?  Goals:
-# - encapsulate ligand neighborhood into a class
-# - RC to mafft to match two sequencce
-# - wrap the call into a class method
-# - match back to the original residue ids
-# - match forth to the destination residue ids
+# - encapsulate ligand neighborhood into a           class         --- x
+# - RC          to     mafft        to   match       two sequencce --- x
+# - wrap        the    call         into a           class method  --- x
+# - match       back   to           the  original    residue ids   --- x
+# - match       forth  to           the  destination residue ids   --- x
