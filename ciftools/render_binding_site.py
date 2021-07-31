@@ -27,7 +27,30 @@ n1      = np.array
 
 load_dotenv(dotenv_path='/home/rxz/dev/ribetl/.env'      )
 STATIC_ROOT = os  .getenv   ('STATIC_ROOT')
-AMINO_ACIDS = {"ALA":0,'ARG':1,'ASN':0,'ASP':-1,'CYS':0,'GLN':0,'GLU':-1,'GLY':0,'HIS':0,'ILE':0,'LEU':0,'LYS':1,'MET':0,'PHE':0,'PRO':0,'SER':0,'THR':0,'TRP':0,'TYR':0,'VAL':0,'SEC':0,'PYL':0}
+#? Charges
+AMINO_ACIDS = {
+"ALA":0,
+'ARG':1,
+'ASN':0,
+'ASP':-1,
+'CYS':0,
+'GLN':0,
+'GLU':-1,
+'GLY':0,
+'HIS':0,
+'ILE':0,
+'LEU':0,
+'LYS':1,
+'MET':0,
+'PHE':0,
+'PRO':0,
+'SER':0,
+'THR':0,
+'TRP':0,
+'TYR':0,
+'VAL':0,
+'SEC':0,
+'PYL':0}
 NUCLEOTIDES = ['A','T','C','G','U']
 
 
@@ -78,6 +101,7 @@ class BindingSite:
             for x in self.data.items():
                 serialized.update({x[0]: dataclasses.asdict(x[1])})  
             json.dump(serialized,outf)
+            print("Saved successfuly.")
 
     def to_csv(self,pathtofile:str)->None:
 
@@ -178,8 +202,7 @@ def get_ligand_nbrs(
         nbr_dict[c]= BindingSiteChain(
              seq[0] if len(seq) >0 else '',
              list  ( flatten    (run       (matchStrandToClass(pdbid, c))) ),
-            [* map   ( dataclasses.asdict,sorted( list       (filter    (lambda _ : _.parent_strand_id == c, nbr_residues)),
-                            key= operator   .attrgetter('residue_id')) )]
+            [* map   ( dataclasses.asdict,sorted( list       (filter    (lambda _ : _.parent_strand_id == c, nbr_residues)),key= operator   .attrgetter('residue_id')) )]
         )
 
     return BindingSite(nbr_dict)
@@ -189,7 +212,7 @@ def dropions(s:str): return False if "ion" in s[1].lower()else  True
 def ParseLigand(ligid:str, rcsbid:str, force:bool=False):
     # try:
     outfile_json = os.path.join(STATIC_ROOT,rcsbid.upper(), f'LIGAND_{ligid}.json')
-    outfile_csv  = os.path.join(STATIC_ROOT,rcsbid.upper(), f'LIGAND_{ligid}.csv')
+    # outfile_csv  = os.path.join(STATIC_ROOT,rcsbid.upper(), f'LIGAND_{ligid}.csv')
 
     if os.path.exists(outfile_json) and not force:
         print(outfile_json, "exists. Skipping.")
@@ -198,6 +221,7 @@ def ParseLigand(ligid:str, rcsbid:str, force:bool=False):
     struct                     = openStructutre           (rcsbid                                            )
     residues   : List[Residue] = getLigandResIds          (ligid       , struct                              )
     bs:BindingSite = get_ligand_nbrs          (ligid,residues   , struct                               )
+    pprint(bs.data)
     bs.to_json(outfile_json)
     # bs.to_csv(outfile_csv)
 

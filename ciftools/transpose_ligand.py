@@ -1,3 +1,4 @@
+from ctypes import alignment
 import dataclasses
 import operator
 import json
@@ -29,113 +30,42 @@ flatten = itertools.chain.from_iterable
 n1      = np.array
 
 
-
-# def seqformat(seq:str):
-# 	print("Seqlen is ", len(seq))
-# 	if len(seq)<=80:
-# 		return seq
-# 	else:
-# 		subs = len(seq)//80
-# 		print("Found ", subs,"Subdivisions")
-# 		for g in range(1,subs+1):
-# 			seq =  seq[:g*80] + "\n" + seq[g*80+1:] 
-# 	print(seq)
-# 	return seq
-		
-		
-
-	
-
-
-
-
-#! Include sequence into the ligand profiles
-#! exclude the ligand itself from the transposition
-#* match matchable chains from target to prediction
-
-
-
-
-#3j7z  ERY ---> to 5hl7, 3j9z, 6otl
-#6AZ1  PAR ---> 5t2a l.donovani
-
-origin     = str( sys.argv[1] ).upper()
-project_to = str( sys.argv[2] ).upper()
-
-with open(f'../static/{origin}/LIGAND_PAR.json', 'rb') as infile:
-	data = json.load(infile)
-
-
-bs = bsite.BindingSite(data)
-
-#? Protocol: 
-#? for every chain in origin, grab same nomenclature in tgt
-#? track ids back, apply forth
-#? apply ids 
-
-
-origin_chains = {
-
-}
-
-target_chains = {
-
-}
-
-
-for chain in bs.data:
-	if len( bs.data[chain]['nomenclature'] ) <1:
-		continue
-	else:
-		res_align_mapping :Dict[int,Tuple[int,int]] = {
-			resid:(-1,-1) for  resid in [*map(lambda x : x['residue_id'], bs.data[chain]['residues'])]
-		}
-		origin_chains[bs.data[chain]['nomenclature'][0]] = {
-			'strand':chain,
-			'seq': bs.data[chain]['sequence'],
-			# 'ids': [*map(lambda x : x['residue_id'], bs.data[chain]['residues'])]
-			'ids': res_align_mapping
-		}
-
-
-for nom in origin_chains:
-	name_matches = []
-	cypher       = f"""match (n:RibosomeStructure {{rcsb_id:"{project_to}"}})-[]-(c)-[]-(r {{class_id:"{nom}"}}) return c.entity_poly_seq_one_letter_code, c.entity_poly_strand_id"""
-	response     = bsite._neoget(cypher)
-	if len( response )  < 1:
-		print(f"No chain-class matches for {nom} in {project_to} in the database.")
-		continue
-	else:
-		match = response[0]
-
-	strand              = match[1]
-	seq                 = match[0]
-	target_chains[nom] ={
-		'strand': strand,
-		'seq'   : seq
-	}
-
-# ?The driving data strucutre for matching is Dict[int,Tuple(int,int)]
-# ?where the key index is the index in the original_unaligned, tup[0] is the index in ori
-
 class SeqMatch:
 
-	def __init__(self,sourceseq:str,targetseq:str) -> None:
-		"""S1 and S2"""
-		self.seq1    = sourceseq
-		self.seq2    = targetseq
-		_            = pairwise2.align.globalxx(origin_seq,target_seq, one_alignment_only=True)
+	def __init__(self,sourceseq:str,targetseq:str, source_residues:List[int]) -> None:
+		"""A container for origin and target sequences when matching the resiudes of a ligand binding site
+		to another protein's sequence through BioSeq's Align
+		 """
+		#* Computed indices of the ligand-facing in the source sequence.
+		self.src     :str      = sourceseq
+		self.src_ids:List[int] = source_residues
+
+		#* Indices of predicted residues in target sequence. To be filled.
+		self.tgt     :str      = targetseq
+		self.tgt_ids:List[int] = []
+		
+		_            = pairwise2.align.globalxx(self.src,self.tgt, one_alignment_only=True)
 		self.src_aln = _[0].seqA
 		self.tgt_aln = _[0].seqB
 
+		self.aligned_ids = []
+
+		for src_resid in self.src_ids:
+			self.aligned_ids.append(self.forwards_match(self.src_aln,src_resid))
+
+		for aln_resid in self.aligned_ids:
+			if self.tgt_aln[aln_resid] == '-':
+				print("Omitting aligned residue ", aln_resid)
+				continue
+			self.tgt_ids.append(self.backwards_match(self.tgt_aln,aln_resid))
 
 	def backwards_match(self, alntgt:str, resid:int):
 		"""Returns the target-sequence  index of a residue in the (aligned) target sequence"""
+		if resid > len(alntgt):
+			exit(IndexError(f"Passed residue with invalid index ({resid}) to back-match to target.Seqlen:{len(alntgt)}"))
 		counter_proper = 0
 		for i,char in enumerate(alntgt):
 			if i == resid:
-				if char == "-":
-					return None
 				return counter_proper
 			if char =='-':
 				continue
@@ -180,40 +110,135 @@ class SeqMatch:
 		return _
 
 
-		
-for  name in origin_chains:
+
+#! Include sequence into the ligand profiles
+#! exclude the ligand itself from the transposition
+#* match matchable chains from target to prediction
+
+#? Protocol: 
+#? for every chain in origin, grab same nomenclature in tgt
+#? track ids back, apply forth
+#? apply ids 
+
+#3j7z  ERY ---> to 5hl7, 3j9z, 6otl
+#6AZ1  PAR ---> 5t2a l.donovani
+
+# * Ecoli structs :  3j7z, 7k00, 6q97, 5j30
+# ! yeast : 6z6n, 5mrc, 3j6b,6xir, 4u4n
+
+#? PAR:
+# 6az1 , 5tcu, 5iqr, 5el7,4wsd,4l71
+
+#? KIR:
+# 5afi, 4v8q, 4v5s,4v5g, 
+
+source_struct = str(sys.argv[1] ).upper()
+target_struct = str(sys.argv[2] ).upper()
+ligand        = str(sys.argv[3]).upper()
+
+
+
+with open(f'../static/{source_struct}/LIGAND_{ligand}.json', 'rb') as infile:
+	data = json.load(infile)
+bs = bsite.BindingSite(data)
+
+
+origin_chains = {
+}
+
+target_chains = {
+}
+
+
+#* For every chain in a ligand file, if it has nomenclature, append its residues, strand and sequence
+for chain in bs.data:
+	if len(bs.data[chain]['nomenclature'] ) <1:
+		continue
+	else:
+		resids :List[int] = [
+			resid for  resid in [*map(lambda x : x['residue_id'], bs.data[chain]['residues'])]
+		]
+		origin_chains[bs.data[chain]['nomenclature'][0]] = {
+			  'strand': chain,
+			  'seq'   : bs.data[chain]['sequence'],
+			  'ids'   : resids
+		}
+
+for nom in origin_chains:
+	name_matches = []
+	cypher       = f"""match (n:RibosomeStructure {{rcsb_id:"{target_struct}"}})-[]-(c)-[]-(r {{class_id:"{nom}"}}) return c.entity_poly_seq_one_letter_code, c.entity_poly_strand_id, c.asym_ids"""
+	response     = bsite._neoget(cypher)
+	if len( response )  < 1:
+		print(f"No chain-class matches for {nom} in {target_struct} in the database.")
+		continue
+	else:
+		match = response[0]
+
+	seq                 = match[0]
+	strand              = match[1]
+	asymid              = match[2][0]
+
+	target_chains[nom] ={
+		'seq'   : seq,
+		'strand': strand,
+		'asymid': asymid,
+	}
+#! """Only the chains with nomenclature matches in source and origin make their way into the prediction file """
+
+
+
+prediction ={}
+
+
+for name in origin_chains:
 	if name not in target_chains:
 		continue
-	source_ids = origin_chains[name]['ids']
 
-	origin_seq     = origin_chains[name]['seq']
-	target_seq     = target_chains[name]['seq']
+	src_ids = origin_chains[name]['ids']
 
-	aligned        = pairwise2.align.globalxx(origin_seq,target_seq, one_alignment_only=True)
+	src     = origin_chains[name]['seq']
+	tgt     = target_chains[name]['seq']
 
-	source_aligned = aligned[0].seqA
-	target_aligned = aligned[0].seqB
+	sq      = SeqMatch(src,tgt,src_ids)
 
-	
-	aligned_ids = []
-	target_ids  = []
+	src_aln = sq.src_aln
+	tgt_aln = sq.tgt_aln
 
-	for orig in source_ids:
-		aligned_ids.append(forwards_match(source_aligned,orig))
+	aln_ids = sq.aligned_ids
 
-	for algn in aligned_ids:
-		target_ids.append(backwards_match(target_aligned,algn))
-	
+	tgt_ids = sq.tgt_ids
 
-	# print("Aligned ids", source_ids.keys())
-	# print("To ------->", aligned_ids)
-	# print("To targets :", target_ids)
+
+
+	prediction[name] = {
+		"source":{
+			"src"    : src,
+			"src_ids": src_ids,
+			"strand" : origin_chains[name]['strand']
+		},
+		"target":{
+			"tgt"    : tgt,
+			"tgt_ids": tgt_ids,
+			'strand' : target_chains[name]['strand']
+		},
+		"alignment" :{
+			"aln_ids": aln_ids,
+			"src_aln": src_aln,
+			"tgt_aln": tgt_aln,
+		},
+	}
 
 	print(f"Protein {name}")
+	print("Aligned ids" , src_ids)
+	print("To ------->" , sq        .aligned_ids  )
+	print("To targets :", sq        .tgt_ids      )
 
-	print("ORG   : \t",hl_ixs(origin_seq,source_ids),"\n")
-	print("ORG AL: \t",hl_ixs(source_aligned,aligned_ids),"\n")
-	print("TGT AL: \t",hl_ixs(target_aligned,aligned_ids),"\n")
-	print("TGT   : \t",hl_ixs(target_seq, target_ids),"\n")
+	print("ORG   : \t",SeqMatch.hl_ixs(sq.src    , sq.src_ids    ),"\n")
+	print("ORG AL: \t",SeqMatch.hl_ixs(sq.src_aln, sq.aligned_ids),"\n")
+	print("TGT AL: \t",SeqMatch.hl_ixs(sq.tgt_aln, sq.aligned_ids),"\n")
+	print("TGT   : \t",SeqMatch.hl_ixs(sq.tgt    , sq.tgt_ids    ),"\n")
 
+fname = f'PREDICTION_{ligand}_{source_struct}_{target_struct}.json'
 
+with open(f'/home/rxz/dev/ribetl/static/{target_struct}/{fname}', 'w') as outfile:
+	json.dump(prediction,outfile)
