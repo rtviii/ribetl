@@ -110,12 +110,6 @@ class BindingSiteChain:
 class BindingSite:
     def __init__(self,data:Dict[str,BindingSiteChain]) -> None:
         self.data : Dict[str,BindingSiteChain] = data
-
-    def transpose_site(self, target_struct)->None:
-        tgt = openStructutre(target_struct)
-        print("Target:", tgt)
-        ...
-
     def to_json(self,pathtofile:str)->None:
         with open(pathtofile, 'w') as outf: 
             serialized = {}
@@ -134,14 +128,7 @@ class BindingSite:
         ]
 
         serialized = dict.fromkeys(k,[])
-        
         pprint(serialized)
-
-        # for chain in self.data:
-        # # print(serialized['chainname'])
-        # print("nomenclature", serialized['nomenclature'])
-        # pd.DataFrame(serialized,columns=k).to_csv(pathtofile, index=False)
-        # print("Saved as csv: ",pathtofile)
 
 def getLigandResIds(ligchemid:str, struct: Structure)->List[Residue]:
     """Returns a list of dictionaries specifying each _ligand_ of type @ligchemid as a biopython-residue inside a given @struct."""
@@ -214,20 +201,23 @@ def get_ligand_nbrs(
     #Filter the ligand itself, water and other special residues 
     nbr_residues = list(filter(lambda resl:resl.residue_name  in [*AMINO_ACIDS.keys(),  *NUCLEOTIDES], nbr_residues))
 
-    # x: ResidueLite
-    # lambda _: x.residue_name == "H_HOH"
-    # print(nbr_residues)
     nbr_dict     = {}
     chain_names  = list(set(map(lambda _:  _.parent_strand_id, nbr_residues)))
 
     for c in chain_names:
-        seq = _neoget(f"""match (n:RibosomeStructure{{rcsb_id:"{struct.get_id().upper()}"}})-[]-(r {{entity_poly_strand_id:"{c}"}}) 
-        return r.entity_poly_seq_one_letter_code, r.asym_ids""")
-        seq,asymid = [*flatten(seq)]
+        cypher=f"""match (n:RibosomeStructure{{rcsb_id:"{struct.get_id().upper()}"}})-[]-(x) where x.entity_poly_strand_id contains "{c}"
+            return x.entity_poly_strand_id, x.asym_ids,x.entity_poly_seq_one_letter_code"""
+        resp = _neoget(cypher)
+        #! RESP may arrive as a single 3-tuple of strand, asymid and sequence or might be an array of 3-tuples of chains whose strand ids contained the queried name. Then filter.
+        if len(resp) ==1:
+            strands, asymid, seq = [*flatten(resp)]
+        else:
+            strands, asymid, seq = [*flatten( [ chain for chain in resp if  c in chain[0].split(",") ] )]
+            
         nbr_dict[c]= BindingSiteChain(
-            seq      ,
-            list      ( flatten (run (matchStrandToClass(pdbid, c))) ), #* <------- nomenclature
-            asymid   ,
+            seq    ,
+            list   ( flatten (run (matchStrandToClass(pdbid, c))) ),
+            asymid ,
             sorted([residue for residue in nbr_residues if residue.parent_strand_id == c], key=operator.attrgetter('residue_id'))
         )
 
@@ -240,6 +230,9 @@ def parse_and_save_ligand(ligid:str, rcsbid:str):
     outfile_json = os.path.join(STATIC_ROOT,rcsbid.upper(), f'LIGAND_{ligid}.json')
     # outfile_csv  = os.path.join(STATIC_ROOT,rcsbid.upper(), f'LIGAND_{ligid}.csv')
 
+    if os.path.exists(outfile_json):
+        print("Exists.")
+        exit(0)
     struct                   = openStructutre  (rcsbid                   )
     residues : List[Residue] = getLigandResIds (ligid  , struct          )
     bs:BindingSite           = get_ligand_nbrs (ligid ,residues , struct )
@@ -261,6 +254,7 @@ if __name__ =="__main__" :
     PDBID       = args.structure.upper()
     LIGID       = args.ligand
 
+    print("\t\t\t\033[92m * \033[0m")
     if LIGID == None:
         struct_ligands = n1([ *filter(dropions, get_lig_ids_struct(PDBID) ) ],dtype=object)
         print(f"\tParsing ligands for structure {PDBID}: ")
@@ -271,6 +265,7 @@ if __name__ =="__main__" :
             parse_and_save_ligand(l[0].upper(), PDBID)
     else:
         parse_and_save_ligand(LIGID.upper(),PDBID)
+    print("\t\t\t\033[92m - \033[0m")
 
 
 #?  Goals:
