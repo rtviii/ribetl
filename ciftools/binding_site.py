@@ -174,14 +174,28 @@ def get_lig_ids_struct(pdbid:str)->List[str]:
     return l.chemicalId, l.chemicalName """.format_map({ "pdbid":pdbid }))
     return db_response
 
+
+
+
+    
+
+
 def get_ligand_nbrs(
       lig_chemid     : str,
       ligand_residues: List[Residue],
       struct         : Structure,
     )-> BindingSite  : 
+
     """KDTree search the neighbors of a given list of residues(which constitue a ligand) 
     and return unique having tagged them with a ban identifier proteins within 5 angstrom of these residues. """
+
     
+    pdbid = struct.get_id().upper()
+
+    with open(f"/home/rxz/dev/ribetl/static/{pdbid}/{pdbid}.json",'rb') as strfile:
+        profile       = json.load(strfile)
+        poly_entities = [*profile['proteins'], *profile['rnas']]
+
     vprint(f"Parsing ligand {lig_chemid}...")
 
     pdbid = struct.get_id()
@@ -198,6 +212,7 @@ def get_ligand_nbrs(
     #? Filtering phase
     #Convert residues to the dataclass, filter non-unique
     nbr_residues = list(set([* map(ResidueLite.res2reslite, nbr_residues) ]))
+
     #Filter the ligand itself, water and other special residues 
     nbr_residues = list(filter(lambda resl:resl.residue_name  in [*AMINO_ACIDS.keys(),  *NUCLEOTIDES], nbr_residues))
 
@@ -205,21 +220,30 @@ def get_ligand_nbrs(
     chain_names  = list(set(map(lambda _:  _.parent_strand_id, nbr_residues)))
 
     for c in chain_names:
-        cypher=f"""match (n:RibosomeStructure{{rcsb_id:"{struct.get_id().upper()}"}})-[]-(x) where x.entity_poly_strand_id contains "{c}"
-            return x.entity_poly_strand_id, x.asym_ids,x.entity_poly_seq_one_letter_code"""
-        resp = _neoget(cypher)
-        #! RESP may arrive as a single 3-tuple of strand, asymid and sequence or might be an array of 3-tuples of chains whose strand ids contained the queried name. Then filter.
-        if len(resp) ==1:
-            strands, asymid, seq = [*flatten(resp)]
-        else:
-            strands, asymid, seq = [*flatten( [ chain for chain in resp if  c in chain[0].split(",") ] )]
-            
+
+        for poly_entity in poly_entities:
+            if ',' in poly_entity['entity_poly_strand_id']:
+                if c in poly_entity['entity_poly_strand_id'].split(','):
+                    nomenclature = poly_entity['nomenclature'                   ]
+                    strands      = poly_entity['entity_poly_strand_id'          ]
+                    asymid       = poly_entity['asym_ids'                       ]
+                    seq          = poly_entity['entity_poly_seq_one_letter_code']
+            elif c == poly_entity['entity_poly_strand_id']:
+                    nomenclature = poly_entity['nomenclature'                   ]
+                    strands      = poly_entity['entity_poly_strand_id'          ]
+                    asymid       = poly_entity['asym_ids'                       ]
+                    seq          = poly_entity['entity_poly_seq_one_letter_code']
+        # #!RESP may arrive as a single 3-tuple of strand, asymid and sequence or might be an array of 3-tuples of chains whose strand ids contained the queried name. Then filter.
+        # cypher=f"""match (n:RibosomeStructure{{rcsb_id:"{struct.get_id().upper()}"}})-[]-(x) where x.entity_poly_strand_id contains "{c}"
+        #     return x.entity_poly_strand_id, x.asym_ids,x.entity_poly_seq_one_letter_code"""
+        # resp = _neoget(cypher)
+        # nomenclature  = list(flatten(run(matchStrandToClass(pdbid,c))))
+
         nbr_dict[c]= BindingSiteChain(
-            seq    ,
-            list   ( flatten (run (matchStrandToClass(pdbid, c))) ),
+            seq,
+            nomenclature,
             asymid ,
-            sorted([residue for residue in nbr_residues if residue.parent_strand_id == c], key=operator.attrgetter('residue_id'))
-        )
+            sorted([residue for residue in nbr_residues if residue.parent_strand_id == c], key=operator.attrgetter('residue_id')))
 
     vpprint(nbr_dict)
     return BindingSite(nbr_dict)
@@ -230,9 +254,9 @@ def parse_and_save_ligand(ligid:str, rcsbid:str):
     outfile_json = os.path.join(STATIC_ROOT,rcsbid.upper(), f'LIGAND_{ligid}.json')
     # outfile_csv  = os.path.join(STATIC_ROOT,rcsbid.upper(), f'LIGAND_{ligid}.csv')
 
-    if os.path.exists(outfile_json):
-        print("Exists.")
-        exit(0)
+    # if os.path.exists(outfile_json):
+    #     print("Exists.")
+    #     exit(0)
     struct                   = openStructutre  (rcsbid                   )
     residues : List[Residue] = getLigandResIds (ligid  , struct          )
     bs:BindingSite           = get_ligand_nbrs (ligid ,residues , struct )

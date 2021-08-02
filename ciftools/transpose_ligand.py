@@ -25,7 +25,7 @@ from asyncio import run
 import itertools
 import neo4j
 import numpy as np
-import render_binding_site as bsite
+import binding_site as bsite
 flatten = itertools.chain.from_iterable
 n1      = np.array
 
@@ -193,9 +193,7 @@ prediction ={}
 for name in origin_chains:
 	if name not in target_chains:
 		continue
-
 	src_ids = origin_chains[name]['ids']
-
 	src     = origin_chains[name]['seq']
 	tgt     = target_chains[name]['seq']
 
@@ -207,8 +205,6 @@ for name in origin_chains:
 	aln_ids = sq.aligned_ids
 
 	tgt_ids = sq.tgt_ids
-
-
 
 	prediction[name] = {
 		"source":{
@@ -241,4 +237,6 @@ for name in origin_chains:
 fname = f'PREDICTION_{ligand}_{source_struct}_{target_struct}.json'
 
 with open(f'/home/rxz/dev/ribetl/static/{target_struct}/{fname}', 'w') as outfile:
+	print("prediction",prediction)
 	json.dump(prediction,outfile)
+	print("Sucessfully saved prediction {}".format(fname))
