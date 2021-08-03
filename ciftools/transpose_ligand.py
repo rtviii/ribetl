@@ -53,7 +53,14 @@ class SeqMatch:
 		for src_resid in self.src_ids:
 			self.aligned_ids.append(self.forwards_match(self.src_aln,src_resid))
 
+
+		self.aligned_ids = list(filter(lambda x: x != None, self.aligned_ids ))
+
 		for aln_resid in self.aligned_ids:
+			print(len(self.tgt_aln))
+			print(self.tgt_aln)
+			print(self.aligned_ids)
+			print("looking for res", aln_resid)
 			if self.tgt_aln[aln_resid] == '-':
 				print("Omitting aligned residue ", aln_resid)
 				continue
@@ -224,19 +231,21 @@ for name in origin_chains:
 		},
 	}
 
-	print(f"Protein {name}")
-	print("Aligned ids" , src_ids)
-	print("To ------->" , sq        .aligned_ids  )
-	print("To targets :", sq        .tgt_ids      )
+	print(f"Chain {name}")
+	print("Source length:", len(sq.src))
+	print("Target length:", len(sq.tgt))
+	# print("Aligned ids" , src_ids)
+	# print("To ------->" , sq        .aligned_ids  )
+	# print("To targets :", sq        .tgt_ids      )
+
 
 	print("ORG   : \t",SeqMatch.hl_ixs(sq.src    , sq.src_ids    ),"\n")
-	print("ORG AL: \t",SeqMatch.hl_ixs(sq.src_aln, sq.aligned_ids),"\n")
-	print("TGT AL: \t",SeqMatch.hl_ixs(sq.tgt_aln, sq.aligned_ids),"\n")
+	# print("ORG AL: \t",SeqMatch.hl_ixs(sq.src_aln, sq.aligned_ids),"\n")
+	# print("TGT AL: \t",SeqMatch.hl_ixs(sq.tgt_aln, sq.aligned_ids),"\n")
 	print("TGT   : \t",SeqMatch.hl_ixs(sq.tgt    , sq.tgt_ids    ),"\n")
 
 fname = f'PREDICTION_{ligand}_{source_struct}_{target_struct}.json'
 
 with open(f'/home/rxz/dev/ribetl/static/{target_struct}/{fname}', 'w') as outfile:
-	print("prediction",prediction)
 	json.dump(prediction,outfile)
 	print("Sucessfully saved prediction {}".format(fname))

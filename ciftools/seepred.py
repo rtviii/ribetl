@@ -6,29 +6,47 @@ import argparse
 
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument('-L','--ligand', type=str)
-parser.add_argument('-s','--source', type=str)
-parser.add_argument('-t','--target', type=str)
-
-args = parser.parse_args()
-LIG  = args.ligand.upper()
-SRC  = args.source.upper()
-TGT  = args.target.upper()
+# 5JU8 5JTE 4WFN 4V7X 4V7U 3J7z 1YI2 6S0X 6ND6      --- ERY ---> 7aqc
+# 5JU8 5JTE 4WFN 4V7X 4V7U 3J7z 1YI2 6S0z 6S0X 6ND6 --- ERY ---> 4lfz
+# 6XZB 6XZA 6XZ7 6OF1                               --- DI0 ---> 3j9w 
 
 
-cmd.load('/home/rxz/dev/ribetl/static/{}/{}.cif'.format(TGT,TGT))
 
-with  open('/home/rxz/dev/ribetl/static/{}/PREDICTION_{}_{}_{}.json'.format(TGT,LIG,SRC,TGT), 'rb') as infile:
-	data = json.load(infile)
+@cmd.extend
+def see_prediction(LIG,SRC,TGT):
+	cmd.delete('all')
+	LIG, SRC, TGT = [_.upper() for _ in [LIG, SRC,TGT]]
 
-cmd.color('gray','all')
-for chain in data:
-	# print(data[ chain ]['source']['strand'])
-	tgt_strand = data[ chain ]['target']['strand']
-	# src_resids =  data[ chain ]['source']['src_ids']
-	tgt_resids =  data[ chain ]['target']['tgt_ids']
+	cmd.load('/home/rxz/dev/ribetl/static/{}/{}.cif'.format(TGT,TGT))
+	predfile = '/home/rxz/dev/ribetl/static/{}/PREDICTION_{}_{}_{}.json'.format(TGT,LIG,SRC,TGT)
 
-	for resid in tgt_resids:
-		cmd.color('cyan', f'c. {tgt_strand} and resi {resid}')
+	with  open(predfile, 'rb') as infile:
+		data = json.load(infile)
+	cmd.color('gray40','all')
+	for chain in data:
+		tgt_strand = data[ chain ]['target']['strand']
+		tgt_resids =  data[ chain ]['target']['tgt_ids']
+
+		for resid in tgt_resids:
+			cmd.color('cyan', f'c. {tgt_strand} and resi {resid}')
+			cmd.show('sticks', f'c. {tgt_strand} and resi {resid}')
+
+@cmd.extend
+def see_ligand(LIG,SRC):
+	cmd.delete('all')
+	LIG, SRC = [_.upper() for _ in [LIG, SRC]]
+	cmd.load('/home/rxz/dev/ribetl/static/{}/{}.cif'.format(SRC,SRC))
+	with  open('/home/rxz/dev/ribetl/static/{}/LIGAND_{}.json'.format(SRC,LIG), 'rb') as infile:
+		data = json.load(infile)
+	cmd.color('gray40','all')
+	cmd.color('cyan',f'resn {LIG}')
+
+	for chain in data:
+		'nomenclature'
+		resids = [ _['residue_id'] for _ in data[chain]['residues']]
+		for i in resids:
+			cmd.color('green',f'c. {chain} and resi {i}')
+
 		
+
+
