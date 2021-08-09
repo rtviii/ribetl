@@ -8,8 +8,6 @@ import sys,os
 
 
 
-
-
 def get_dict(path:str,)->dict:
 	return MMCIF2Dict.MMCIF2Dict(path)
 

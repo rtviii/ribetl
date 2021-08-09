@@ -7,7 +7,7 @@ import argparse
 
 
 # 5JU8 5JTE 4WFN 4V7X 4V7U 3J7z 1YI2 6S0X 6ND6      --- ERY ---> 7aqc
-# 5JU8 5JTE 4WFN 4V7X 4V7U 3J7z 1YI2 6S0z 6S0X 6ND6 --- ERY ---> 4lfz
+# 5JU8 5JTE 4WFN 4V7X 4V7U 3J7z 1YI2 6S0z 6S0X 6ND6 --- PAR ---> 4lfz
 # 6XZB 6XZA 6XZ7 6OF1                               --- DI0 ---> 3j9w 
 
 
